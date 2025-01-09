@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Database credentials or sensitive information
+*.env
+
+# IDE settings
+.idea/
+.vscode/
