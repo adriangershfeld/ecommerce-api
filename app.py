@@ -4,18 +4,13 @@ from flask_marshmallow import Marshmallow
 from datetime import datetime
 import os
 
-# Initialize app
 app = Flask(__name__)
-
-# Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/ecommerce_api'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize database and Marshmallow
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Database models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
@@ -36,7 +31,7 @@ class OrderProduct(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
 
-# Marshmallow schemas
+
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
@@ -49,7 +44,7 @@ class ProductSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Product
 
-# Initialize schemas
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 order_schema = OrderSchema()
@@ -57,8 +52,7 @@ orders_schema = OrderSchema(many=True)
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
-# CRUD Endpoints
-# User Endpoints
+
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -99,7 +93,6 @@ def delete_user(id):
 
     return jsonify({'message': 'User deleted'})
 
-# Product Endpoints
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
@@ -138,7 +131,6 @@ def delete_product(id):
 
     return jsonify({'message': 'Product deleted'})
 
-# Order Endpoints
 @app.route('/orders', methods=['POST'])
 def create_order():
     user_id = request.json['user_id']
@@ -185,7 +177,6 @@ def get_order_products(order_id):
     products = Product.query.filter(Product.id.in_(product_ids)).all()
     return products_schema.jsonify(products)
 
-# Run server
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
